@@ -7,7 +7,8 @@ import asyncio
 import requests
 from discord import Member, Embed
 from discord.ext.commands import command, cooldown, BucketType, CommandOnCooldown
-client = commands.Bot(command_prefix = "--")
+client = commands.Bot(command_prefix = "!")
+
 
 api_key = "2d2409cc015c720c6ffc476eb630c5f3"
 base_url = "http://api.openweathermap.org/data/2.5/weather?"
@@ -91,7 +92,7 @@ async def when_online():
     await general_channel.send('Hello, People')
 
 @client.event
-async def on_message(message):
+async def on_messae(message):
 
     if message.content == "what is the version":
         general_channel = client.get_channel(795101474627256360)
@@ -99,8 +100,8 @@ async def on_message(message):
         myEmbed = discord.Embed(title="Current Version", description="The bot is in version 1.0", color=0x00ff00)
         myEmbed.add_field(name="Version Code:", value="Version 1.0", inline=False)
         myEmbed.add_field(name="Date Released", value="January 10th, 2021", inline=False)
-        myEmbed.set_footer(text="This is a sample footer")
-        myEmbed.set_author(name="Arcel")
+        myEmbed.set_footer(text="Hope you got it")
+        myEmbed.set_author(name="Made By Arcel")
 
 
         await general_channel.send(embed=myEmbed)
@@ -174,9 +175,7 @@ async def ticket(ctx):
 @ticket.error
 async def on_command_error(ctx, exc):
     if on_command_error(exc, CommandOnCooldown):
-        await ctx.send("You already have a support channel open. Kindly wait for your current support channel to be closed !")
-
-
+        await ctx.send("You already have a support channel open. Kindly wait for your current support channel to be closed by a Staff. Thanks ^_^")
 
 @client.command()
 async def close(ctx, member: discord.Member): 
@@ -190,7 +189,29 @@ async def close(ctx, member: discord.Member):
         general = discord.utils.get(guild.text_channels, name="study-bot")
         await ctx.send(embed=nbed)
         await channel.delete()
-        await general.send(f'Hi! {member.mention} Your support channel has been closed by one of the staff to open a new ticket please do --ticket again. Thank You')
+        await general.send(f'Hi! {member.mention} Your support channel has been closed by one of the staff to open a new support channel please do !ticket again')
+filtered_words = ["Boop","boop","Faggot","nigger","faggot", "Transvestite","twat","suicide","boob"," anal","bloody bitch", "asshole", "son of a bitch"]
+@client.event
+async def on_message(msg):
+    context = msg.channel
+    author = msg.author
+    myEmbed2 = discord.Embed(title="Your Message Was Flagged Inappropriate:", description=f'{author.mention} your message had some words which is not to be used in this server we kindly request you to refrain from using such words in this server', color=0x00ff00)
+    myEmbed2.add_field(name="Thank You", value="  -----------------------------------------------------------  ")
+    myEmbed2.set_footer(text="Enjoy your stay in this server and have a great day ahead ^_^")
+    myEmbed2.set_author(name=f'Hi {author},')
+
+    for word in filtered_words:
+        if word in msg.content:
+            await context.send(embed=myEmbed2)
+
+    await client.process_commands(msg)
+@client.command()
+async def chmessages(ctx, channel: discord.TextChannel=None):
+    channel = channel or ctx.channel
+    count = 0
+    async for _ in channel.history(limit=None):
+        count += 1
+    await ctx.send("There are {} messages in {}".format(count, channel.mention))
 
 @client.event
 async def on_ready():
@@ -213,5 +234,38 @@ async def birthday(birthday):
         myEmbed2.set_author(name="Hi Citizens,")
 
         await birthday.message.channel.send(embed=myEmbed2)
+@client.command(aliases=['ub'])
+@commands.has_permissions(ban_members = True)
+async def unban(ctx, *,member):
+    banned_users = await ctx.guild.bans()
+    member_name, member_disc = member.split('#')
 
-client.run('NzkyNzg3OTQzNDEyMDcyNDQ4.X-izTg.KCa-WxhsP25x0myh2xHgt38ZknI')
+    for banned_entry in banned_users:
+        user = banned_entry.user
+
+        if(user.name, user.discriminator)==(member_name,member_disc):
+
+            await ctx.guild.unban(user)
+            await ctx.send("User " + member_name + " has been unbanned")
+            return
+        else:
+            await ctx.send("Sorry ! You do not have the permission to use this command. Please contact Staff or Admin.")
+@client.command(aliases=['m'])
+@commands.has_permissions(kick_members=True)
+async def mute(ctx, member: discord.Member):
+    guild = ctx.guild
+    muted_role = discord.utils.get(guild.roles,name="Muted")
+    await member.add_roles(muted_role)
+
+    await ctx.send(member.mention + " has been muted")
+
+@client.command(aliases=['u'])
+@commands.has_permissions(kick_members=True)
+async def unmute(ctx, member: discord.Member):
+    guild = ctx.guild
+    muted_role = discord.utils.get(guild.roles,name="Muted")
+    await member.remove_roles(muted_role)
+
+    await ctx.send(member.mention + " has been unmuted")
+
+client.run()
