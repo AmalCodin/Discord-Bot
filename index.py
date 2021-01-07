@@ -268,4 +268,4 @@ async def unmute(ctx, member: discord.Member):
 
     await ctx.send(member.mention + " has been unmuted")
 
-client.run(os.environ.['token'])
+client.run('')
