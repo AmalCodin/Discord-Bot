@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random 
+import os
 import discord as d
 from discord.utils import get
 import asyncio
@@ -268,4 +269,4 @@ async def unmute(ctx, member: discord.Member):
 
     await ctx.send(member.mention + " has been unmuted")
 
-client.run('')
+client.run(os.environ['token'])
