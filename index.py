@@ -47,11 +47,11 @@ async def weather(ctx, *, city: str):
 @client.command(name='version')
 async def version(context):
 
-    myEmbed = discord.Embed(title="Current Version", description="The bot is in version 1.0", color=0x00ff00)
+    myEmbed = discord.Embed(title="Current Version:", description="The bot is in version 1.0", color=0x00ff00)
     myEmbed.add_field(name="Version Code:", value="Version 1.0", inline=False)
-    myEmbed.add_field(name="Date Released", value="July 18th, 2020", inline=False)
+    myEmbed.add_field(name="Date Released:", value="January 1st, 2021", inline=False)
     myEmbed.set_footer(text="Hope you got to know about its version ^_^")
-    myEmbed.set_author(name="Amal S")
+    myEmbed.set_author(name="Made By Arcel#0001:")
 
     await context.message.channel.send(embed=myEmbed)
 
@@ -268,4 +268,4 @@ async def unmute(ctx, member: discord.Member):
 
     await ctx.send(member.mention + " has been unmuted")
 
-client.run()
+client.run(os.environ.['token'])
